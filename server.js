@@ -1,13 +1,16 @@
 const Koa = require('koa');
 const koaRouter = require('koa-router');
+const json = require('koa-json');
 
 // instantiate the Koa server
 const app = new Koa();
 // instantiate the Koa router
 const router = new koaRouter();
 
-// logger *setting the X-Response-Time header*
+// set up the koa-json middleware
+app.use(json());
 
+// logger *setting the X-Response-Time header*
 app.use(async (ctx, next) => {
   await next();
   const rt = ctx.response.get('X-Response-Time');
@@ -15,7 +18,6 @@ app.use(async (ctx, next) => {
 });
 
 // x-response-time
-
 app.use(async (ctx, next) => {
   const start = Date.now();
   await next();
@@ -32,7 +34,6 @@ app.use(router.allowedMethods());
 //   return ctx.body = '<h1>this is the homepage</h1>';
 // });
 router.get('/', async (ctx) => {
-  console.log(ctx.request, 'this is the context object');
   return ctx.body = '<h1>this is the homepage</h1>';
 });
 
@@ -55,6 +56,21 @@ router.get('/contact', async (ctx) => {
 // });
 router.get('/gallery', async (ctx) => {
   return ctx.body = '<h1>this is the gallery page</h1>';
+});
+
+router.get('/api/users', async (ctx) => {
+  return ctx.body = [
+    {
+      'username' : 'jameshagood87',
+      'name': 'James Hagood',
+      'age': 33
+    },
+    {
+      'username' : 'billy87',
+      'name': 'Billy Hagood',
+      'age': 17
+    }
+  ];
 });
 // this is the routes end
 
